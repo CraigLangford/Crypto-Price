@@ -1,4 +1,4 @@
-from .cryptoprice import (
+from cryptoprice import (
     crypto_price_lambda, collect_crypto_price, get_key_and_value_match
 )
 
