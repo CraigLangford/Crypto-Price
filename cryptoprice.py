@@ -1,6 +1,5 @@
 import difflib
 import json
-import logging
 import requests
 
 API_LINK = ("https://min-api.cryptocompare.com"
@@ -72,7 +71,7 @@ def collect_crypto_price(event, session):
     Extracts the cryptocurrency, finds the nearest match, and returns
     its price. If the financial currency is supplied the amount returned
     is in that currency. Otherwise the price is returned based on where
-    the user is asking from. 
+    the user is asking from.
     """
     location_permission = True
     slots = event['request']['intent']['slots']
