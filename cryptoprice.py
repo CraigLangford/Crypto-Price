@@ -7,7 +7,7 @@ API_LINK = ("https://min-api.cryptocompare.com"
 USER_LOCATION_LINK = ("https://api.amazonalexa.com/v1/devices/{device_id}"
                       "/settings/address/countryAndPostalCode")
 DEFAULT_CRYPTO = 'Bitcoin'
-DEFAULT_CURRENCY = 'US Dollars'
+DEFAULT_COUNTRY = 'US'
 
 
 def crypto_price_lambda(event, session):
@@ -77,41 +77,41 @@ def collect_crypto_price(event, session):
     slots = event['request']['intent']['slots']
     crypto_currency = slots['cryptocurrency'].get('value', DEFAULT_CRYPTO)
     currency = slots['Currency'].get('value', None)
+    c2c_file = 'data/country_to_currency.json'
+    COUNTRIES_TO_CURRENCIES = json_to_dictionary(c2c_file)
+    default_currency = COUNTRIES_TO_CURRENCIES[DEFAULT_COUNTRY]
     if not currency:
-        currency = DEFAULT_CURRENCY
         permissions = event['context']['System']['user']['permissions']
         if permissions == {}:
             location_permission = False
+            currency = default_currency
         else:
             device_id = event['context']['System']['device']['deviceId']
             consent_token = "Bearer " + permissions['consentToken']
             headers = {'Authorization': consent_token}
             location_api_link = USER_LOCATION_LINK.format(device_id=device_id)
             response = requests.get(location_api_link, headers=headers)
-            country_code = response.json().get('countryCode', DEFAULT_CURRENCY)
-            with open('data/country_to_currency.json', 'r') as c2c_file:
-                COUNTRIES_TO_CURRENCIES = json.load(c2c_file)
-            currency = COUNTRIES_TO_CURRENCIES[country_code]
+            user_country_code = response.json().get('countryCode',
+                                                    DEFAULT_COUNTRY)
+            currency = COUNTRIES_TO_CURRENCIES[user_country_code]
 
-    with open('data/cryptocurrencies.json', 'r') as cryptocurrency_file:
-        SUPPORTED_COINS = json.load(cryptocurrency_file)
+    SUPPORTED_COINS = json_to_dictionary('data/cryptocurrencies.json')
     from_currency, from_symbol = get_key_and_value_match(crypto_currency,
                                                          SUPPORTED_COINS,
                                                          DEFAULT_CRYPTO)
 
-    with open('data/currencies.json', 'r') as currency_file:
-        SUPPORTED_CURRENCIES = json.load(currency_file)
+    SUPPORTED_CURRENCIES = json_to_dictionary('data/currencies.json')
     if currency:
         to_currency, to_symbol = get_key_and_value_match(currency,
                                                          SUPPORTED_CURRENCIES,
-                                                         DEFAULT_CURRENCY)
+                                                         default_currency)
     else:
-        to_currency = DEFAULT_CURRENCY
-        to_symbol = SUPPORTED_CURRENCIES[DEFAULT_CURRENCY]
+        to_currency = default_currency
+        to_symbol = SUPPORTED_CURRENCIES[default_currency]
 
     api_link = API_LINK.format(from_symbol=from_symbol, to_symbol=to_symbol)
     api_response = requests.get(api_link)
-    api_price = json.loads(api_response.content).get(to_symbol, 'Unavailable')
+    api_price = api_response.json().get(to_symbol, 'Unavailable')
 
     title = "{from_currency} Price in {to_currency}".format(
                 from_currency=from_currency,
@@ -209,3 +209,12 @@ def add_permission_request(response, original_message):
     response['response']['outputSpeech']['text'] = new_message
 
     return response
+
+
+def json_to_dictionary(filename):
+    """
+    Takes a file and returns a python dictionary.
+    """
+    with open(filename, 'r') as json_file:
+        dictionary = json.load(json_file)
+    return dictionary

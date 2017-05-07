@@ -36,7 +36,6 @@ EXAMPLE_INTENT_REQUEST = {
             "user": {
                 "userId": "string",
                 "permissions": {
-                    "consentToken": "string"
                 },
                 "accessToken": "string"
             },
