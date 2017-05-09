@@ -36,7 +36,7 @@ def crypto_price_lambda(event, session):
         response_message = ("Welcome to crypto price. Please ask a question "
                             "like: What is the price of bitcoin")
         should_end_session = False
-        location_permission = False
+        location_permission = True
     elif request_type == 'IntentRequest':
         request_intent = event['request']['intent']['name']
         if request_intent == 'GetCryptoPriceIntent':
