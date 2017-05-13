@@ -30,29 +30,32 @@ def crypto_price_lambda(event, session):
     5. The response is returned to ASK
     """
     request_type = event['request'].get('type')
+    permissions = event['context']['System']['user']['permissions']
+    if permissions == {}:
+        location_permission = False
+    else:
+        location_permission = True
 
     if request_type == 'LaunchRequest':
         title = "Crypto Price Trends"
-        response_message = ("Welcome to crypto price. Please ask a question "
-                            "like: What is the price of bitcoin")
+        response_message = ("Please ask a question like: What is the price of"
+                            " bitcoin")
         should_end_session = False
-        location_permission = True
     elif request_type == 'IntentRequest':
         request_intent = event['request']['intent']['name']
         if request_intent == 'GetCryptoPriceIntent':
-            crypto_details = collect_crypto_price(event, session)
-            title, response_message, location_permission = crypto_details
+            crypto_details = collect_crypto_price(event, location_permission)
+            title, response_message = crypto_details
             should_end_session = True
         elif request_intent == 'AMAZON.HelpIntent':
             title = "Crypto Price Help"
-            response_message = ("Crypto price returns the price of the "
+            response_message = ("Crypto Price returns the price of the "
                                 "leading cryptocurrencies. You can ask "
                                 "questions like: What is the price of "
                                 "bitcoin, tell me the current price of monero "
                                 "in US dollars, and, what is the price of "
                                 "litecoin in pounds. Please ask a question.")
             should_end_session = False
-            location_permission = True
         elif request_intent in ['AMAZON.StopIntent', 'AMAZON.CancelIntent']:
             title = "Crypto Price Cancel"
             response_message = ("Thanks for using crypto price. See you at "
@@ -66,14 +69,13 @@ def crypto_price_lambda(event, session):
                           location_permission=location_permission)
 
 
-def collect_crypto_price(event, session):
+def collect_crypto_price(event, location_permission):
     """
     Extracts the cryptocurrency, finds the nearest match, and returns
     its price. If the financial currency is supplied the amount returned
     is in that currency. Otherwise the price is returned based on where
     the user is asking from.
     """
-    location_permission = True
     slots = event['request']['intent']['slots']
     crypto_currency = slots['cryptocurrency'].get('value', DEFAULT_CRYPTO)
     currency = slots['Currency'].get('value', None)
@@ -82,8 +84,7 @@ def collect_crypto_price(event, session):
     default_currency = COUNTRIES_TO_CURRENCIES[DEFAULT_COUNTRY]
     if not currency:
         permissions = event['context']['System']['user']['permissions']
-        if permissions == {}:
-            location_permission = False
+        if not location_permission:
             currency = default_currency
         else:
             device_id = event['context']['System']['device']['deviceId']
@@ -123,7 +124,7 @@ def collect_crypto_price(event, session):
                                                value=api_price,
                                                to_currency=to_currency)
 
-    return title, response_message, location_permission
+    return title, response_message
 
 
 def get_key_and_value_match(key_word, dictionary, default_key_word):
