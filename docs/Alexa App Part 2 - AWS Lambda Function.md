@@ -180,7 +180,7 @@ def crypto_price_lambda(event, session):
 
 ## Handling the logic to gather the cryptoprice
 
-Our app can now respond nearly every type of response, except for the one we actually built the app for! This function will be taking the desired cryptocurrency, and if the user specified, the cryptocurrency and look up the price. Looking around http://cryptocompare.com/api it seems we can convert any cryptoprice to any world currency. This can be achieved by making a request to https://min-api.cryptocompare.com/data/price?fsym={from_symbol}&tsyms={to_symbol} and subbing in the 3 letter symbol of the cryptocurrency (BTC for Bitcoin) for the from_symbol and the 3 letter symbol of the world currency (USD for US dollars) to the to_symbol. [Here's the link](https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=BTC) for USD to BTC as an example. The trick here, of course will be converting the users request to the correct three letter symbol. Let's create a function which takes the event and returns the title for the response card and the message to be said and shown. This will use additional json dictionaries based on the cryptocurrencies and currencies the API supports.
+Our app can now respond nearly every type of response, except for the one we actually built the app for! This function will be taking the desired cryptocurrency, and if the user specified, the cryptocurrency and look up the price. Looking around http://cryptocompare.com/api it seems we can convert any cryptoprice to any world currency. This can be achieved by making a request to https://min-api.cryptocompare.com/data/price?fsym={from_symbol}&tsyms={to_symbol} and subbing in the 3 letter symbol of the cryptocurrency (BTC for Bitcoin) for the from_symbol and the 3 letter symbol of the world currency (USD for US dollars) to the to_symbol. [Here's the link](https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD) for USD to BTC as an example. The trick here, of course will be converting the users request to the correct three letter symbol. Let's create a function which takes the event and returns the title for the response card and the message to be said and shown. This will use additional json dictionaries based on the cryptocurrencies and currencies the API supports.
 
 *Handling the Cryptocurrency Logic*
 
@@ -315,10 +315,10 @@ def collect_crypto_price(event):
 
 ## Final Thoughts
 
-You can see the full source code on github [here](LINK) and see that there has been logic added to the collect_crypto_price function. This is to handle the following edge cases:
+You can see the full source code on github [here](https://github.com/CraigLangford/Crypto-Price) and see that there has been logic added to the collect_crypto_price function. This is to handle the following edge cases:
 
 * When the world currency isn't supplied - the app defaults to the country where the user is
 * When a 3 letter name is specified
 * If the Alexa Skill Kit app sends a typo - Python's native difflib.get_close_matches is used to guess the nearest match for the user
 
-That's it! You now have a working Lambda function that you can pair with your Alexa Skills Kit application. See [deployment](LINK) for how to upload your function to AWS and to actually use it!
+That's it! You now have a working Lambda function that you can pair with your Alexa Skills Kit application. See [deployment](https://github.com/CraigLangford/Crypto-Price#deployment) for how to upload your function to AWS and to actually use it!
