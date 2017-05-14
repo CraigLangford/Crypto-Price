@@ -6,29 +6,29 @@ Crypto Price is an Amazon Web Services (AWS) Lambda Function that pairs with the
 ---
 
 > **User**: Alexa, tell me the price of Bitcoin from Crypto Price. *(location disabled by the user)*
-
+>
 > **Alexa**: The current price of Bitcoin is 1,487.91 US dollars.
 
 ---
 
 > **User**: Alexa, open Crypto Price and tell me the price of Ethereum. *(location enabled by the user and they live in the United Kingdom)*
- 
+> 
 > **Alexa**: The current price of Ethereum is 53.72 pounds.
 
 ---
 
 > **User**: Alexa, load Crypto Price.
- 
+> 
 > **Alexa**: Welcome to Crypto Price. Please ask a question like: What is the price of Bitcoin?
-
+>
 > **User**: Give me the price of Monero in yen.
- 
+>
 > **Alexa**: The current price of Monero is 3,070.75 yen.
 
 ---
 
 > **User**: Alexa, get help from Crypto Price.
- 
+>
 > **Alexa**: Crypto Price returns the price of the leading cryptocurrencies in any country's currency. You can ask questions like...
 
 ---
@@ -39,7 +39,7 @@ These instructions will you get a copy of the project up and running on your loc
 
 ### Prerequisites
 
-This app runs using Python 3.6.1. Please checkout [www.python.org](https://www.python.org) to install it on your own system. It is recommended to build the project in a contained virtual environment. It is recommended that you set up [Virtualenv](https://virtualenv.pypa.io/en/stable/) with the [Virtualenv Wrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) which allows you to create and delete Virtualenvs easily. 
+This app runs using Python 3.6.1. Please checkout [www.python.org](https://www.python.org) to install it on your own system. It is recommended to build the project in a contained virtual environment. This can be achieved with a combination of [Virtualenv](https://virtualenv.pypa.io/en/stable/) and the [Virtualenv Wrapper](https://virtualenvwrapper.readthedocs.io/en/latest/) which allows you to create and delete Virtualenvs easily. 
 
 ### Installing
 
@@ -88,7 +88,13 @@ $ py.test
 
 ## Deployment
 
-To deploy the system as an Amazon Lambda function you 
+To deploy the system as an Amazon Lambda function you must create a zip composed of the core cryptoprice.py file, the data directory and the third party requests module. This is handled by the setup.py script which can be run in the root directory as below.
+
+```bash
+$ python setup.py
+```
+
+This will generate a cryptoprice.zip file which can be uploaded as your lambda function to AWS Lambda.
 
 ## Contributing
 
