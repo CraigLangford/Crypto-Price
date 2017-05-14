@@ -2,6 +2,8 @@ import os
 from subprocess import call
 import shutil
 
+BOLD = '\033[1m'
+
 
 if __name__ == '__main__':
     """
@@ -27,3 +29,6 @@ if __name__ == '__main__':
     for node in os.listdir():
         if node.startswith('requests'):
             shutil.rmtree(node)
+
+    print(BOLD + "cryptoprice.zip is now created - upload this to AWS Lambda"
+          + BOLD)
