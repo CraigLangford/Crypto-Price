@@ -94,7 +94,7 @@ To deploy the system as an Amazon Lambda function you must create a zip composed
 $ python setup.py
 ```
 
-This will generate a cryptoprice.zip file which can be uploaded as your lambda function to AWS Lambda.
+This will generate a cryptoprice.zip file which can be uploaded as your lambda function to AWS Lambda. For more details see the [AWS Lambda Documentation](http://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html).
 
 ## Contributing
 
