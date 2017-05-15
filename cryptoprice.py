@@ -41,12 +41,14 @@ def crypto_price_lambda(event, session):
         response_message = ("Please ask a question like: What is the price of"
                             " bitcoin")
         should_end_session = False
+        reprompt = True
     elif request_type == 'IntentRequest':
         request_intent = event['request']['intent']['name']
         if request_intent == 'GetCryptoPriceIntent':
             crypto_details = collect_crypto_price(event, location_permission)
             title, response_message = crypto_details
             should_end_session = True
+            reprompt = False
         elif request_intent == 'AMAZON.HelpIntent':
             title = "Crypto Price Help"
             response_message = ("Crypto Price returns the price of the "
@@ -56,17 +58,27 @@ def crypto_price_lambda(event, session):
                                 "in US dollars, and, what is the price of "
                                 "litecoin in pounds. Please ask a question.")
             should_end_session = False
+            reprompt = True
         elif request_intent in ['AMAZON.StopIntent', 'AMAZON.CancelIntent']:
             title = "Crypto Price Cancel"
             response_message = ("Thanks for using crypto price. See you at "
                                 "the moon.")
             should_end_session = True
             location_permission = True
+            reprompt = False
+    else:
+        title = "Crypto Price Cancel"
+        response_message = ("Thanks for using crypto price. See you at "
+                            "the moon.")
+        should_end_session = True
+        location_permission = True
+        reprompt = False
     return build_response(card_title=title,
                           card_content=response_message,
                           output_speech=response_message,
                           should_end_session=should_end_session,
-                          location_permission=location_permission)
+                          location_permission=location_permission,
+                          reprompt=reprompt)
 
 
 def collect_crypto_price(event, location_permission):
@@ -166,7 +178,8 @@ def build_response(
         card_content="Returns price of a cryptocurrency",
         output_speech="Welcome to cryptoprice",
         should_end_session=True,
-        location_permission=True):
+        location_permission=True,
+        reprompt=False):
     """
     Builds a valid ASK response based on the incoming attributes.
     """
@@ -187,6 +200,8 @@ def build_response(
     }
     if not location_permission:
         ask_response = add_permission_request(ask_response, output_speech)
+    if reprompt:
+        ask_response = add_reprompt(ask_response)
     return ask_response
 
 
@@ -209,6 +224,19 @@ def add_permission_request(response, original_message):
     new_message = '. '.join([original_message, permission_message])
     response['response']['outputSpeech']['text'] = new_message
 
+    return response
+
+
+def add_reprompt(response):
+    """
+    Adds a response message to tell the user to ask their question again.
+    """
+    response['response']['reprompt'] = {
+        "outputSpeech": {
+            "type": "PlainText",
+            "text": "Please ask your crypto price question"
+        }
+    }
     return response
 
 
