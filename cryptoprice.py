@@ -29,6 +29,8 @@ def crypto_price_lambda(event, session):
        to the message
     5. The response is returned to ASK
     """
+    import logging
+    logging.warning("Event: " + str(event))
     request_type = event['request'].get('type')
     permissions = event['context']['System']['user']['permissions']
     if permissions == {}:
@@ -59,7 +61,7 @@ def crypto_price_lambda(event, session):
                                 "litecoin in pounds. Please ask a question.")
             should_end_session = False
             reprompt = True
-        elif request_intent in ['AMAZON.StopIntent', 'AMAZON.CancelIntent']:
+        else:
             title = "Crypto Price Cancel"
             response_message = ("Thanks for using crypto price. See you at "
                                 "the moon.")
