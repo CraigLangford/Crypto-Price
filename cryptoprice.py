@@ -32,8 +32,8 @@ def crypto_price_lambda(event, session):
     import logging
     logging.warning("Event: " + str(event))
     request_type = event['request'].get('type')
-    permissions = event['context']['System']['user']['permissions']
-    if permissions == {}:
+    permissions = event['context']['System']['user'].get('permissions')
+    if not permissions:
         location_permission = False
     else:
         location_permission = True
