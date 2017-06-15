@@ -40,8 +40,9 @@ def crypto_price_lambda(event, session):
 
     if request_type == 'LaunchRequest':
         title = "Crypto Price Trends"
-        response_message = ("Please ask a question like: What is the price of"
-                            " bitcoin")
+        response_message = (
+            "Please ask a question like: What is the price of bitcoin"
+        )
         should_end_session = False
         reprompt = True
     elif request_type == 'IntentRequest':
@@ -53,25 +54,28 @@ def crypto_price_lambda(event, session):
             reprompt = False
         elif request_intent == 'AMAZON.HelpIntent':
             title = "Crypto Price Help"
-            response_message = ("Crypto Price returns the price of the "
-                                "leading cryptocurrencies. You can ask "
-                                "questions like: What is the price of "
-                                "bitcoin, tell me the current price of monero "
-                                "in US dollars, and, what is the price of "
-                                "litecoin in pounds. Please ask a question.")
+            response_message = (
+                "Crypto Price returns the price of the leading "
+                "cryptocurrencies. You can ask questions like: What is the "
+                "price of bitcoin, tell me the current price of monero in US "
+                "dollars, and, what is the price of litecoin in pounds. "
+                "Please ask a question."
+            )
             should_end_session = False
             reprompt = True
         else:
             title = "Crypto Price Cancel"
-            response_message = ("Thanks for using crypto price. See you at "
-                                "the moon.")
+            response_message = (
+                "Thanks for using crypto price. See you at the moon."
+            )
             should_end_session = True
             location_permission = True
             reprompt = False
     else:
         title = "Crypto Price Cancel"
-        response_message = ("Thanks for using crypto price. See you at "
-                            "the moon.")
+        response_message = (
+            "Thanks for using crypto price. See you at the moon."
+        )
         should_end_session = True
         location_permission = True
         reprompt = False
@@ -129,11 +133,12 @@ def collect_crypto_price(event, location_permission):
     api_price = api_response.json().get(to_symbol, 'Unavailable')
 
     title = "{from_currency} Price in {to_currency}".format(
-                from_currency=from_currency,
-                to_currency=to_currency
-            )
-    response_message = ("{from_currency} is currently worth {value}"
-                        " {to_currency}")
+        from_currency=from_currency,
+        to_currency=to_currency
+    )
+    response_message = (
+        "{from_currency} is currently worth {value} {to_currency}"
+    )
     response_message = response_message.format(from_currency=from_currency,
                                                value=api_price,
                                                to_currency=to_currency)
@@ -218,10 +223,10 @@ def add_permission_request(response, original_message):
             "read::alexa:device:all:address:country_and_postal_code"
         ]
     }
-    permission_message = ("To get your country's currency automatically, "
-                          "please enable location permissions for crypto "
-                          "price in your alexa app")
-
+    permission_message = (
+        "To get your country's currency automatically, please enable location "
+        "permissions for crypto price in your alexa app"
+    )
     response['response']['card'] = permission_card
     new_message = '. '.join([original_message, permission_message])
     response['response']['outputSpeech']['text'] = new_message

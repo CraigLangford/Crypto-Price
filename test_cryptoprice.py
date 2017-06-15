@@ -52,21 +52,11 @@ EXAMPLE_INTENT_REQUEST = {
 }
 
 
-def test_get_key_and_value_match():
-    """
-    Tests the get_key_and_value_match with various keys and values.
-    """
-    test_dict = {"Apple": "APC", "Banana": "BNC", "Carrot and Potato": "CAP"}
-    args = ("carrot and potato", test_dict, "default")
-    assert "Apple", "APC" == get_key_and_value_match(*args)
-    args = ("carrot and potato", test_dict, "default")
-    assert "Banana", "BNC" == get_key_and_value_match(*args)
-    args = ("carrot and potato", test_dict, "default")
-    assert "Carrot and Potato", "CAP" == get_key_and_value_match(*args)
-    args = ("appl", test_dict, "default")
-    assert "Apple", "APC" == get_key_and_value_match(*args)
-    args = ("fdsaoijpjo", test_dict, "Apple")
-    assert "Apple", "APC" == get_key_and_value_match(*args)
+def test_crypto_price_lambda_returns_dictionary():
+    crypto_price_response = crypto_price_lambda(EXAMPLE_INTENT_REQUEST, {})
+    assert type(crypto_price_response) == dict
+    assert 'version' in crypto_price_response
+    assert 'response' in crypto_price_response
 
 
 def test_collect_crypto_price_for_various_cryptocurrencies():
@@ -123,16 +113,26 @@ def test_collect_crypto_price_for_nearest_values():
     assert response_message.endswith("Canadian Dollars")
 
 
-def test_crypto_price_lambda_returns_dictionary():
-    crypto_price_response = crypto_price_lambda(EXAMPLE_INTENT_REQUEST, {})
-    assert type(crypto_price_response) == dict
-    assert 'version' in crypto_price_response
-    assert 'response' in crypto_price_response
-
-
 def test_cryptocurrency_returns_correct_format():
     conversion_response = crypto_price_lambda(EXAMPLE_INTENT_REQUEST, {})
     assert 'version' in conversion_response
     assert 'response' in conversion_response
     assert 'card' in conversion_response['response']
     assert 'outputSpeech' in conversion_response['response']
+
+
+def test_get_key_and_value_match():
+    """
+    Tests the get_key_and_value_match with various keys and values.
+    """
+    test_dict = {"Apple": "APC", "Banana": "BNC", "Carrot and Potato": "CAP"}
+    args = ("carrot and potato", test_dict, "default")
+    assert "Apple", "APC" == get_key_and_value_match(*args)
+    args = ("carrot and potato", test_dict, "default")
+    assert "Banana", "BNC" == get_key_and_value_match(*args)
+    args = ("carrot and potato", test_dict, "default")
+    assert "Carrot and Potato", "CAP" == get_key_and_value_match(*args)
+    args = ("appl", test_dict, "default")
+    assert "Apple", "APC" == get_key_and_value_match(*args)
+    args = ("fdsaoijpjo", test_dict, "Apple")
+    assert "Apple", "APC" == get_key_and_value_match(*args)
